@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, StyleSheet, Text, View } from 'react-native'
-import TeamSetup from './setup_pages/team'
+import TeamsSetup from './team_setup/TeamsSetup'
 
 export default function HomeScreen() {
 	const [count, setCount] = useState(0)
@@ -16,7 +16,7 @@ export default function HomeScreen() {
 					</View>
 				</>
 			)}
-			{page === 'setup_team' && <TeamSetup />}
+			{page === 'setup_team' && <TeamsSetup />}
 		</View>
 	)
 }

@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 
 export type TeamViewerProps = {
-	players: Player[]
+	players: Players
 	teams: Teams
 }
-export default function TeamViewer({ players, teams }: TeamViewerProps) {
+export default function TeamsViewer({ players, teams }: TeamViewerProps) {
 	return (
 		<View style={s.container}>
 			<View style={s.team_container}>
@@ -13,9 +13,7 @@ export default function TeamViewer({ players, teams }: TeamViewerProps) {
 					{teams.one.playerIDs.map((id) => {
 						return (
 							<View style={s.player} key={id}>
-								<Text style={s.player_text}>
-									{players.find((player) => player.id === id)?.name}
-								</Text>
+								<Text style={s.player_text}>{players[id].name}</Text>
 							</View>
 						)
 					})}
@@ -27,9 +25,7 @@ export default function TeamViewer({ players, teams }: TeamViewerProps) {
 					{teams.two.playerIDs.map((id) => {
 						return (
 							<View style={s.player} key={id}>
-								<Text style={s.player_text}>
-									{players.find((player) => player.id === id)?.name}
-								</Text>
+								<Text style={s.player_text}>{players[id].name}</Text>
 							</View>
 						)
 					})}
@@ -42,7 +38,7 @@ const s = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
-		padding: 16,
+		padding: 0,
 		gap: 12,
 	},
 	team_container: {
