@@ -10,7 +10,7 @@ export default function useGameLogic() {
 	const [curPlayerID, setCurPlayerID] = useState<string>('')
 	const [prevPlayerID, setPrevPlayerID] = useState<string>('')
 	const [nextPlayerID, setNextPlayerID] = useState<string>('')
-	const [curTeam, setCurTeam] = useState<GameState['curTeam']>('one')
+	const [curTeam, setCurTeam] = useState<GameController['curTeam']>('one')
 
 	const gotoNextPlayer = () => {
 		// using the current player, determine who the new nextPlayer is
@@ -54,7 +54,7 @@ export default function useGameLogic() {
 		setCurTeam((prev) => (prev === 'one' ? 'two' : 'one'))
 	}
 
-	const setTeamSides: GameState['setTeamSides'] = (teamOneSide, teamTwoSide) => {
+	const setTeamSides: GameController['setTeamSides'] = (teamOneSide, teamTwoSide) => {
 		// call setTeams to update info
 		setTeams((prev) => {
 			const clone = deepClone(prev)
@@ -64,7 +64,7 @@ export default function useGameLogic() {
 		})
 	}
 
-	const addNewPlayer: GameState['addNewPlayer'] = (name, team) => {
+	const addNewPlayer: GameController['addNewPlayer'] = (name, team) => {
 		const newPlayerID = Math.random().toString(36).substr(2, 9)
 		setPlayers((prev) => ({ ...prev, [newPlayerID]: { name: name } }))
 		setTeams((prev) => {
@@ -74,12 +74,13 @@ export default function useGameLogic() {
 		})
 	}
 
-	const controller: GameState = {
+	const controller: GameController = {
 		players,
 		teams,
 		curTeam,
 		setTeamSides,
 		addNewPlayer,
+		setTeams,
 		active: {
 			curPlayerID,
 			prevPlayerID,
@@ -92,10 +93,11 @@ export default function useGameLogic() {
 	return controller
 }
 
-interface GameState {
+export interface GameController {
 	players: Players
 	teams: Teams
 	curTeam: 'one' | 'two'
+	setTeams: React.Dispatch<React.SetStateAction<Teams>>
 	setTeamSides: (teamOneSide: 'stripe' | 'solid', teamTwoSide: 'stripe' | 'solid') => void
 	addNewPlayer: (name: string, team: 'one' | 'two') => void
 	active: {

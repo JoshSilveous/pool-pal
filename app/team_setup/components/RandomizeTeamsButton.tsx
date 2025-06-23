@@ -1,15 +1,12 @@
+import { GameController } from '@/hooks/useGameLogic'
 import { Button, StyleSheet, View } from 'react-native'
 
 type RandomizeTeamsButtonProps = {
-	players: Players
-	setTeams: (value: React.SetStateAction<Teams>) => void
+	gameCtrl: GameController
 }
-export default function RandomizeTeamsButton({
-	players,
-	setTeams,
-}: RandomizeTeamsButtonProps) {
+export default function RandomizeTeamsButton({ gameCtrl }: RandomizeTeamsButtonProps) {
 	const handleRandomizeTeams = () => {
-		const playerIDs = Object.keys(players)
+		const playerIDs = Object.keys(gameCtrl.players)
 
 		// Shuffle the array using Fisher-Yates
 		for (let i = playerIDs.length - 1; i > 0; i--) {
@@ -22,7 +19,7 @@ export default function RandomizeTeamsButton({
 		const teamOneIDs = playerIDs.slice(0, half)
 		const teamTwoIDs = playerIDs.slice(half)
 
-		setTeams({
+		gameCtrl.setTeams({
 			one: { playerIDs: teamOneIDs, side: null },
 			two: { playerIDs: teamTwoIDs, side: null },
 		})

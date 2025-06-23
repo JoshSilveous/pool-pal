@@ -18,15 +18,17 @@ type PlayerTileProps = {
 		absoluteX: number,
 		absoluteY: number
 	) => void
+	onGrab: (fromTeam: 'one' | 'two') => void
 }
 
-export default function PlayerTile({ id, name, teamKey, onDrop }: PlayerTileProps) {
+export default function PlayerTile({ id, name, teamKey, onDrop, onGrab }: PlayerTileProps) {
 	const translateX = useSharedValue(0)
 	const translateY = useSharedValue(0)
 	const zIndex = useSharedValue(0)
 
 	const gestureHandler = useAnimatedGestureHandler({
 		onStart: (_, ctx: any) => {
+			runOnJS(onGrab)(teamKey)
 			zIndex.value = 1
 			ctx.startX = translateX.value
 			ctx.startY = translateY.value

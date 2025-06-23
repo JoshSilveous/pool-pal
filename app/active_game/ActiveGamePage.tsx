@@ -1,11 +1,10 @@
+import { GameController } from '@/hooks/useGameLogic'
 import { View } from 'react-native'
 
 interface Props {
-	players: Players
-	setPlayers: React.Dispatch<React.SetStateAction<Players>>
-	teams: Teams
-	setTeams: React.Dispatch<React.SetStateAction<Teams>>
+	setCurPage: React.Dispatch<React.SetStateAction<string>>
+	gameCtrl: GameController
 }
-export default function ActiveGamePage({ players, setPlayers, teams, setTeams }: Props) {
+export default function ActiveGamePage({ setCurPage, gameCtrl }: Props) {
 	return <View />
 }

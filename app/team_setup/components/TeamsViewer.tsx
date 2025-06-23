@@ -1,18 +1,40 @@
+import { GameController } from '@/hooks/useGameLogic'
 import { deepClone } from '@/util/deepClone'
 import { useRef } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
 import PlayerTile from './PlayerTile'
 
 export type TeamViewerProps = {
-	players: Players
-	teams: Teams
-	setTeams: React.Dispatch<React.SetStateAction<Teams>>
+	gameCtrl: GameController
 }
-export default function TeamsViewer({ players, teams, setTeams }: TeamViewerProps) {
+export default function TeamsViewer({ gameCtrl }: TeamViewerProps) {
 	const teamOneContainerRef = useRef<View>(null)
 	const teamTwoContainerRef = useRef<View>(null)
 
+	const teamOneZIndex = useSharedValue<undefined | number>(undefined)
+	const teamTwoZIndex = useSharedValue<undefined | number>(undefined)
+
+	const teamOneStyle = useAnimatedStyle(() => ({
+		zIndex: teamOneZIndex.value,
+	}))
+	const teamTwoStyle = useAnimatedStyle(() => ({
+		zIndex: teamTwoZIndex.value,
+	}))
+
+	const handleGrab = (fromTeam: 'one' | 'two') => {
+		// swap z-indexes to prevent visual overlap issues
+		console.log('running handleGrab', fromTeam)
+		if (fromTeam === 'one') {
+			teamOneZIndex.value = 10
+		} else {
+			teamTwoZIndex.value = 10
+		}
+	}
 	const handleDrop = (id: string, fromTeam: 'one' | 'two', x: number, y: number) => {
+		teamOneZIndex.value = 0
+		teamTwoZIndex.value = 0
+
 		const teamLayouts = {
 			one: { x: 0, y: 0, width: 0, height: 0 },
 			two: { x: 0, y: 0, width: 0, height: 0 },
@@ -43,7 +65,7 @@ export default function TeamsViewer({ players, teams, setTeams }: TeamViewerProp
 		if (!toTeam || toTeam === fromTeam) return // dropped back in place or invalid
 
 		// move the player
-		setTeams((prev) => {
+		gameCtrl.setTeams((prev) => {
 			const clone = deepClone(prev)
 			clone[fromTeam].playerIDs = clone[fromTeam].playerIDs.filter((pid) => pid !== id)
 			clone[toTeam].playerIDs.push(id)
@@ -53,38 +75,46 @@ export default function TeamsViewer({ players, teams, setTeams }: TeamViewerProp
 
 	return (
 		<View style={s.container}>
-			<View style={s.team_container} ref={teamOneContainerRef}>
+			<Animated.View
+				style={[s.team_container, teamOneStyle]}
+				ref={teamOneContainerRef}
+			>
 				<Text style={s.team_title}>Team 1</Text>
 				<View style={s.team_players}>
-					{teams.one.playerIDs.map((id) => {
+					{gameCtrl.teams.one.playerIDs.map((id) => {
 						return (
 							<PlayerTile
 								key={id}
 								id={id}
-								name={players[id].name}
+								name={gameCtrl.players[id].name}
 								teamKey='one'
 								onDrop={handleDrop}
+								onGrab={handleGrab}
 							/>
 						)
 					})}
 				</View>
-			</View>
-			<View style={s.team_container} ref={teamTwoContainerRef}>
+			</Animated.View>
+			<Animated.View
+				style={[s.team_container, teamTwoStyle]}
+				ref={teamTwoContainerRef}
+			>
 				<Text style={s.team_title}>Team 2</Text>
 				<View style={s.team_players}>
-					{teams.two.playerIDs.map((id) => {
+					{gameCtrl.teams.two.playerIDs.map((id) => {
 						return (
 							<PlayerTile
 								key={id}
 								id={id}
-								name={players[id].name}
+								name={gameCtrl.players[id].name}
 								teamKey='two'
 								onDrop={handleDrop}
+								onGrab={handleGrab}
 							/>
 						)
 					})}
 				</View>
-			</View>
+			</Animated.View>
 		</View>
 	)
 }

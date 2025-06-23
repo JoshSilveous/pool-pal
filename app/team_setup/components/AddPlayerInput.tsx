@@ -1,32 +1,20 @@
-import { deepClone } from '@/util/deepClone'
+import { GameController } from '@/hooks/useGameLogic'
 import { useState } from 'react'
 import { Button, StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 
 type AddPlayerInputProps = {
-	setPlayers: (value: React.SetStateAction<Players>) => void
-	setTeams: (value: React.SetStateAction<Teams>) => void
+	gameCtrl: GameController
 	style?: StyleProp<ViewStyle>
 }
-export default function AddPlayerInput({
-	setPlayers,
-	setTeams,
-	style,
-}: AddPlayerInputProps) {
+export default function AddPlayerInput({ gameCtrl, style }: AddPlayerInputProps) {
 	const [newPlayerName, setNewPlayerName] = useState('')
 	const [teamToAddTo, setTeamToAddTo] = useState<keyof Teams>('one')
 
 	const handleAddPlayer = () => {
 		if (newPlayerName.trim().length === 0) return
 
-		const newPlayerID = Math.random().toString(36).substr(2, 9)
-
-		setPlayers((prev) => ({ ...prev, [newPlayerID]: { name: newPlayerName.trim() } }))
+		gameCtrl.addNewPlayer(newPlayerName, teamToAddTo)
 		setNewPlayerName('')
-		setTeams((prev) => {
-			const clone = deepClone(prev)
-			clone[teamToAddTo].playerIDs = [...clone[teamToAddTo].playerIDs, newPlayerID]
-			return clone
-		})
 		setTeamToAddTo((prev) => (prev === 'one' ? 'two' : 'one'))
 	}
 
