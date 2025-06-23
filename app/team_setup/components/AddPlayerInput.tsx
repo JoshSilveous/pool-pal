@@ -1,12 +1,17 @@
 import { deepClone } from '@/util/deepClone'
 import { useState } from 'react'
-import { Button, StyleSheet, TextInput, View } from 'react-native'
+import { Button, StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 
 type AddPlayerInputProps = {
 	setPlayers: (value: React.SetStateAction<Players>) => void
 	setTeams: (value: React.SetStateAction<Teams>) => void
+	style?: StyleProp<ViewStyle>
 }
-export default function AddPlayerInput({ setPlayers, setTeams }: AddPlayerInputProps) {
+export default function AddPlayerInput({
+	setPlayers,
+	setTeams,
+	style,
+}: AddPlayerInputProps) {
 	const [newPlayerName, setNewPlayerName] = useState('')
 	const [teamToAddTo, setTeamToAddTo] = useState<keyof Teams>('one')
 
@@ -26,7 +31,7 @@ export default function AddPlayerInput({ setPlayers, setTeams }: AddPlayerInputP
 	}
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, style]}>
 			<TextInput
 				style={styles.input}
 				placeholder='Player Name'
