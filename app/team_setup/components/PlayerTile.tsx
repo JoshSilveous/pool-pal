@@ -30,7 +30,6 @@ export default function PlayerTile({ id, name, teamKey, onDrop }: PlayerTileProp
 			zIndex.value = 1
 			ctx.startX = translateX.value
 			ctx.startY = translateY.value
-			ctx.
 		},
 		onActive: (event, ctx: any) => {
 			translateX.value = ctx.startX + event.translationX
